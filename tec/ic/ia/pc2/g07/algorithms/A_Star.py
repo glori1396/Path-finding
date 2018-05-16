@@ -77,8 +77,13 @@ class A_Star(Algorithm):
         movement = movements[i]
 
         step = "Step: %05d" % (self.g,)
-        for i in range(len(movements)):
-            step += " "+movements[i]+": "+self.f[i]
+        for direction_index in range(len(movements)):
+            mov_index = movements_indexes[direction_index]
+            index = [current[0]-mov_index[0], current[1]-mov_index[1]]
+            cost = "Out of Borders"
+            if index in self.open:
+                cost = self.f[self.open.index(index)]
+            step += " "+movements[direction_index]+": "+cost
         move = " Movement: "+movement
         print(step + move)
 
@@ -94,8 +99,34 @@ class A_Star(Algorithm):
                 carrots_coordinates.append([x,y])
         return carrots_coordinates
 
+    def h_without_carrots(self):
+        h = []
+        for possible_state in self.open:
+            #Last immediate direction
+            if possible_state in self.LastMovements[-1:]:
+                h.append(10)
+            #Being there lately
+            elif possible_state in self.LastMovements[:-1]:
+                h.append(5)
+            #Not being there
+            else:
+                h.append(1)
+        return
+
+    def h_with_carrots(self, carrots_coordinates):
+        h = []
+        for possible_state in self.open:
+            nearest_carrot_distance = abs(possible_state[0]-carrots_coordinates[0][0]+ possible_state[1]-carrots_coordinates[0][1])
+            for carrot in carrots_coordinates[1:]:
+                distance = abs(possible_state[0]-carrot[0] + possible_state[1]-carrot[1])
+                if distance < nearest_carrot_distance:
+                    nearest_carrot_distance = distance
+            h.append(nearest_carrot_distance)
+
+
+
     def calculate_f_score(self, current_state):
-        g = [self.g,self.g,self.g,self.g]
+        g = [self.g for i in self.open]
         h = 0
         carrots_coordinates = self.carrots_in_sight(current_state)
         if carrots_coordinates == []:
@@ -117,15 +148,16 @@ class A_Star(Algorithm):
                 print("Step: "+self.g+ " FINAL ; Total Cost: "+ self.totalCost)
                 break
 
-            self.put_Last_Movement(current)
-            last = current
-            self.totalCost += cost
-
             #Refresh neighbors
             self.open = self.search_neighbors(current)
 
             #f(state) = g(state) + h(state)
             self.calculate_f_score(current)
+
+            #Stores last movement
+            self.put_Last_Movement(current)
+            last = current
+            self.totalCost += cost
 
             #Move
             cost, current = self.get_lower()
