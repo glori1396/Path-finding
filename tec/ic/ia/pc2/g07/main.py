@@ -10,15 +10,22 @@ parser = argparse.ArgumentParser(
 parser.add_argument("--a-estrella",
                     action="store_true", help="A* Algorithm.")
 parser.add_argument("--vision", type=int, help="Vision field range.")
-parser.add_argument("--zanahorias", type=int, help="Objective's amount to search.")
+parser.add_argument("--zanahorias", type=int,
+                    help="Objective's amount to search.")
+parser.add_argument("--movimientos-pasados", type=int,
+                    help="Number of past movements to store. (Default 5)")
 
 # Genetic Algorithm
 parser.add_argument("--genetico",
                     action="store_true", help="Genetic Algorithm.")
-parser.add_argument("--derecha", action="store_true", help="All individual going to the right.")
-parser.add_argument("--izquierda", action="store_true", help="All individual going to the left.")
-parser.add_argument("--arriba", action="store_true", help="All individual going up.")
-parser.add_argument("--abajo", action="store_true", help="All individual going down.")
+parser.add_argument("--derecha", action="store_true",
+                    help="All individual going to the right.")
+parser.add_argument("--izquierda", action="store_true",
+                    help="All individual going to the left.")
+parser.add_argument("--arriba", action="store_true",
+                    help="All individual going up.")
+parser.add_argument("--abajo", action="store_true",
+                    help="All individual going down.")
 parser.add_argument("--individuos", type=int, help="Individual's amount.")
 parser.add_argument("--generaciones", type=int, help="Generation's amount.")
 
@@ -40,7 +47,7 @@ if cont_unique_flag != 1:
     exit(-1)
 
 algorithm = None
-#Checks algorithm selected parameters
+# Checks algorithm selected parameters
 if args.a_estrella:
     if args.vision is None or args.zanahorias is None:
         parser.error(
@@ -50,8 +57,13 @@ if args.a_estrella:
         parser.error(
             "The A* algorithm needs to know the vision fiel range and carrot's amount. (>=1)")
         exit(-1)
+    if args.movimientos_pasados is not None:
+        movimientos_pasados = args.movimientos_pasados
+    else:
+        movimientos_pasados = 5
 
-    algorithm = A_Star(board = None, vision = args.vision, carrots = args.zanahorias)
+    algorithm = A_Star(board=None, vision=args.vision,
+                       carrots=args.zanahorias, MaxLastMovements=movimientos_pasados)
 
 elif args.genetico:
     # Checks if just one direction is selected
@@ -74,9 +86,10 @@ elif args.genetico:
         parser.error(
             "The genetic algorithm needs to know the individual's and generation's amount. (>=1)")
         exit(-1)
-    algorithm = Genetic(board = None, direction = direction, individuals = args.individuos, generations = args.generaciones)
+    algorithm = Genetic(board=None, direction=direction,
+                        individuals=args.individuos, generations=args.generaciones)
 
-#Read the board
+# Read the board
 board = []
 with open(args.tablero_inicial) as file:
     for rows in file.readlines():
@@ -85,6 +98,6 @@ with open(args.tablero_inicial) as file:
             row.append(col)
         board.append(row)
 
-#Execute the algorithm
+# Execute the algorithm
 algorithm.board = board
 algorithm.execute()
