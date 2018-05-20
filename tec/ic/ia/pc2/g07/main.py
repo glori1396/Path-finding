@@ -2,6 +2,7 @@ import argparse
 
 from tec.ic.ia.pc2.g07.algorithms.A_Star import A_Star
 from tec.ic.ia.pc2.g07.algorithms.Genetic import Genetic
+from tec.ic.ia.pc2.g07.algorithms.Genetic_Classes.Random_CrossOver import Random_CrossOver
 
 parser = argparse.ArgumentParser(
     description='This program allows to execute a path-finding algortihm. It can be A* or a genetic algorithm for scenario changes.')
@@ -28,6 +29,10 @@ parser.add_argument("--abajo", action="store_true",
                     help="All individual going down.")
 parser.add_argument("--individuos", type=int, help="Individual's amount.")
 parser.add_argument("--generaciones", type=int, help="Generation's amount.")
+parser.add_argument("--politica-cruce",
+                    choices=["random", "sons_of_sons"], help="Crossover algorithm.")
+parser.add_argument("--cantidad-padres", type=int, help="Number of parents.")
+parser.add_argument("--tasa-mutacion", type=int, help="Mutation Rate Percent.")
 
 # Main Program
 parser.add_argument("--tablero-inicial", required=True,
@@ -82,12 +87,30 @@ elif args.genetico:
         parser.error(
             "The genetic algorithm needs to know the individual's and generation's amount.")
         exit(-1)
-    elif args.individuos < 1 or args.generaciones < 1:
+    elif args.individuos < 1 or args.generaciones < 1 or args.individuos > 99999 or args.generaciones > 99999:
         parser.error(
-            "The genetic algorithm needs to know the individual's and generation's amount. (>=1)")
+            "The genetic algorithm needs to know the individual's and generation's amount. (1-99999)")
         exit(-1)
+    if args.politica_cruce is None or args.tasa_mutacion is None or args.cantidad_padres is None:
+        parser.error(
+            "The genetic algorithm needs to know the crossover algorithm, the number of parents and mutation rate.")
+        exit(-1)
+    elif args.tasa_mutacion < 0 or args.tasa_mutacion > 100:
+        parser.error(
+            "The genetic algorithm needs to know the mutation rate. (0-100)")
+        exit(-1)
+    elif args.cantidad_padres < 2 or args.cantidad_padres > args.individuos:
+        parser.error(
+            "The genetic algorithm needs to know the number of parents. (2-"+str(args.individuos)+")")
+        exit(-1)
+
+    if args.politica_cruce == "random":
+        crossover = Random_CrossOver(args.cantidad_padres)
+    elif args.politica_cruce == "sons_of_sons":
+        pass
+
     algorithm = Genetic(board=None, direction=direction,
-                        number_individuals=args.individuos, number_generations=args.generaciones)
+                        number_individuals=args.individuos, number_generations=args.generaciones, crossover=crossover)
 
 # Read the board
 board = []
@@ -98,11 +121,17 @@ with open(args.tablero_inicial) as file:
             row.append(col)
         board.append(row)
 
-#Validate the board (every row has the same amount of columns)
+# Validate the board (every row has the same amount of columns)
 row_count = [len(row) for row in board]
 if row_count.count(row_count[0]) != len(row_count) or board == []:
     parser.error(
         "The board needs to have the same size on every row. (>=1)")
+    exit(-1)
+
+# Validate the board (number of parents less than board size)
+elif args.genetico and args.cantidad_padres > len(board)*len(board[0]):
+    parser.error(
+        "The genetic algorithm needs to know the number of parents. (2-"+str(len(board)*len(board[0]))+")")
     exit(-1)
 
 # Execute the algorithm
