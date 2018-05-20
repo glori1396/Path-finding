@@ -56,11 +56,11 @@ algorithm = None
 if args.a_estrella:
     if args.vision is None or args.zanahorias is None:
         parser.error(
-            "The A* algorithm needs to know the vision fiel range and carrot's amount.")
+            "The A* algorithm needs to know the vision field range and carrot's amount.")
         exit(-1)
     elif args.vision < 1 or args.zanahorias < 1:
         parser.error(
-            "The A* algorithm needs to know the vision fiel range and carrot's amount. (>=1)")
+            "The A* algorithm needs to know the vision field range and carrot's amount. (>=1)")
         exit(-1)
     if args.movimientos_pasados is not None:
         movimientos_pasados = args.movimientos_pasados
