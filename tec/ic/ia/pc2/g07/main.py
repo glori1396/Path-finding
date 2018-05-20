@@ -110,7 +110,8 @@ elif args.genetico:
         pass
 
     algorithm = Genetic(board=None, direction=direction,
-                        number_individuals=args.individuos, number_generations=args.generaciones, crossover=crossover)
+                        number_individuals=args.individuos, number_generations=args.generaciones,
+                        crossover=crossover, mutation_rate=args.tasa_mutacion)
 
 # Read the board
 board = []

@@ -6,8 +6,6 @@ from random import choice
 This class implements a type of CrossOver where parents are selected randomly to
 produce one son.
 """
-
-
 class Random_CrossOver(CrossOver):
     def __init__(self, parents_amount):
         super().__init__(parents_amount)
