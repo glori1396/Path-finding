@@ -87,7 +87,7 @@ elif args.genetico:
             "The genetic algorithm needs to know the individual's and generation's amount. (>=1)")
         exit(-1)
     algorithm = Genetic(board=None, direction=direction,
-                        individuals=args.individuos, generations=args.generaciones)
+                        number_individuals=args.individuos, number_generations=args.generaciones)
 
 # Read the board
 board = []
@@ -97,6 +97,13 @@ with open(args.tablero_inicial) as file:
         for col in rows[:-1]:
             row.append(col)
         board.append(row)
+
+#Validate the board (every row has the same amount of columns)
+row_count = [len(row) for row in board]
+if row_count.count(row_count[0]) != len(row_count) or board == []:
+    parser.error(
+        "The board needs to have the same size on every row. (>=1)")
+    exit(-1)
 
 # Execute the algorithm
 algorithm.board = board
