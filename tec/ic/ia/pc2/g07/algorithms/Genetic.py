@@ -100,37 +100,37 @@ class Genetic(Algorithm):
         fitness = 0
         for individual in population:
             board = individual.gene_as_board(self.cols_in_board)
-            movements, carrots_eaten, used_signals, has_signals_contra = self.walk_trough_board(board, rabbit, max_movements)
+            movements, carrots_eaten, useful_signals, has_signals_contra = self.walk_trough_board(board, rabbit, max_movements)
 
             if has_signals_contra:
                 fitness -= 100
-            if movements == max_movements:#and carrots != carrots_eaten:
+            if movements == max_movements:
                 fitness -= 1000
             if individual.amount_of_signals() == 0 and carrots != carrots_eaten:
                 fitness -= 50
-            fitness -= (50 * (individual.amount_of_signals() - used_signals))
+            fitness -= (50 * (individual.amount_of_signals() - useful_signals))
             fitness += carrots_eaten * 100
             fitness -= (carrots - carrots_eaten) * 50
-            fitness += 3 * used_signals
+            fitness += 3 * useful_signals
             fitness += movements * 5
 
             individual.fitness = fitness
             fitness = 0
 
-    def pretty_print(self, population, generation):
-        basedir = os.path.dirname("Results_GA\\"+self.direction+"\\%05d\\00001.txt" % (generation,))
+    def print_and_save(self, population, generation):
+        basedir = os.path.dirname(
+            "Results_GA\\"+self.direction+"\\%05d\\00001.txt" % (generation,))
         if not os.path.exists(basedir):
             os.makedirs(basedir)
         print("\nGENERACION: %05d" % (generation,))
         num = 1
         for individual in population:
             print("INDIVIDUO %05d APTITUD:" % (num,) + str(individual.fitness))
-            with open("Results_GA\\"+self.direction+"\\%05d\\%05d.txt" % (generation,num,), "w") as file:
+            with open("Results_GA\\"+self.direction+"\\%05d\\%05d.txt" % (generation, num,), "w") as file:
                 for row in individual.board:
                     file.writelines(row)
                     file.write("\n")
             num += 1
-
 
     def execute(self):
         print("\nDeleting old results...")
@@ -166,7 +166,5 @@ class Genetic(Algorithm):
             # Selection of Next Generation
             population = population[:self.number_individuals]
 
-            # Print to console
-            self.pretty_print(population, generation+1)
-            # Save population
-            #self.save_files(population, generation+1)
+            # Print to console and save file
+            self.print_and_save(population, generation+1)

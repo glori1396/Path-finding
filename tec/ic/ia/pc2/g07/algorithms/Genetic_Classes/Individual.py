@@ -39,11 +39,11 @@ class Individual():
         return board
 
 
-    def __lt__(self, other):
-        return self.fitness < other.fitness
-
-    def __repr__(self):
-        return str([self.gene, self.fitness])
-
-    def __str__(self):
-        return str([self.gene, self.fitness])
+    # def __lt__(self, other):
+    #     return self.fitness < other.fitness
+    #
+    # def __repr__(self):
+    #     return str([self.gene, self.fitness])
+    #
+    # def __str__(self):
+    #     return str([self.gene, self.fitness])

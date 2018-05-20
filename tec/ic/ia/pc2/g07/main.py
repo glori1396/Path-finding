@@ -3,6 +3,7 @@ import argparse
 from tec.ic.ia.pc2.g07.algorithms.A_Star import A_Star
 from tec.ic.ia.pc2.g07.algorithms.Genetic import Genetic
 from tec.ic.ia.pc2.g07.algorithms.Genetic_Classes.Random_CrossOver import Random_CrossOver
+from tec.ic.ia.pc2.g07.algorithms.Genetic_Classes.Sons_of_Sons_CrossOver import Sons_of_Sons_CrossOver
 
 parser = argparse.ArgumentParser(
     description='This program allows to execute a path-finding algortihm. It can be A* or a genetic algorithm for scenario changes.')
@@ -107,7 +108,7 @@ elif args.genetico:
     if args.politica_cruce == "random":
         crossover = Random_CrossOver(args.cantidad_padres)
     elif args.politica_cruce == "sons_of_sons":
-        pass
+        crossover = Sons_of_Sons_CrossOver(args.cantidad_padres)
 
     algorithm = Genetic(board=None, direction=direction,
                         number_individuals=args.individuos, number_generations=args.generaciones,
