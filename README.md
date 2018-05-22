@@ -173,13 +173,13 @@ For the tested next state **[3,1]**, the nearest carrot will be **[5,0]**; becau
 
 The *carrots_at_reach* part is how many carrots are at reach if you move to the state. For example, the reach fields are presented in the next images:
 
-<div style="text-align:center"><img src="images/reach_left.png" width="100"><img src="images/reach_down.png" width="100"><img src="images/reach_right.png" width="100"><img src="images/reach_up.png" width="100"></div>
+<div style="text-align:center"><img src="images/reach_left.PNG" width="100"><img src="images/reach_down.PNG" width="100"><img src="images/reach_right.PNG" width="100"><img src="images/reach_up.PNG" width="100"></div>
 
 where the results for the states [[2,0], [3,1], [2,2], [1,1]] would be **1**.
 
 So, for summary, if we those two scenarios the costs are:
 
- <div style="text-align:center"><img src="images/cost_ex_left.png" width="100"><img src="images/cost_ex.png" width="100"><img src="images/cost_example.png" width="100"><img src="images/cost_ex_up.png" width="100"></div>
+ <div style="text-align:center"><img src="images/cost_ex_left.PNG" width="100"><img src="images/cost_ex.PNG" width="100"><img src="images/cost_example.PNG" width="100"><img src="images/cost_ex_up.PNG" width="100"></div>
 
  <div style="text-align:center"><img src="images/cost_ex_down.png" width="100"><img src="images/cost_ex_down.png" width="100"><img src="images/cost_example_right.png" width="100"><img src="images/cost_example_right.png" width="100"></div>
 
@@ -189,7 +189,7 @@ Now, we will present the analysis of cost variation when carrots number and visi
 
 #### Variation in carrots number
 
-<div style="text-align:center"><img src="images/chart_cost_carrots.png" width="300"><img src="images/chart_steps_carrots.png" width="300"></div>
+<div style="text-align:center"><img src="images/chart_cost_carrots.PNG" width="300"><img src="images/chart_steps_carrots.PNG" width="300"></div>
 > The vision field is 2.
 <div style="text-align:center"><table>
     <tbody>
