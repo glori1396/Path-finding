@@ -227,3 +227,54 @@ Now, we will present the analysis of cost variation when carrots number and visi
 </table></div>
 
 * As we can see if the rabbit needs to find more carrots will have to move more around the board and the cost will grow.
+
+#### Variation in vision field
+
+<div style="text-align:center"><img src="images/chart_cost_vision.PNG" width="300"><img src="images/chart_steps_vision.PNG" width="300"></div>
+> The carrots to find are all of them. (19)
+<div style="text-align:center"><table>
+    <tbody>
+        <tr>
+            <th>Carrots</th>
+            <th>1</th>
+            <th>3</th>
+            <th>5</th>
+            <th>9</th>
+            <th>13</th>
+            <th>15</th>
+            <th>19</th>
+            <th>25</th>
+        </tr>
+        <tr>
+            <th>Cost</th>
+            <td>3343809.3</td>
+            <td>699767.4</td>
+            <td>531807.1</td>
+            <td>56611.2</td>
+            <td>44365.3</td>
+            <td>36510.9</td>
+            <td>Inf</td>
+            <td>Inf</td>
+        </tr>
+        <tr>
+            <th>Steps</th>
+            <td>2203.2</td>
+            <td>973</td>
+            <td>935</td>
+            <td>304.4</td>
+            <td>282.6</td>
+            <td>257.4</td>
+            <td>Inf</td>
+            <td>Inf</td>
+        </tr>
+    </tbody>
+</table></div>
+
+* On vision field of 19 and 20, the rabbit gets in a loop so it will never stop, that's why in the chart we put it a Inf value.
+
+* The loop is caused because the rabbit walk to a certain point where it approaches a carrot and another carrot see as a better approach and viceversa. So it moves in circles.
+
+* As we can see when the vision field gets bigger the rabbit can do better decision, so it reduces the cost and steps. That tendency remains until a certain amount of vision field.
+
+
+### Genetic Algorithm

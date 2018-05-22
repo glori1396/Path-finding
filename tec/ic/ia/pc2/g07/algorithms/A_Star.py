@@ -2,6 +2,7 @@ from tec.ic.ia.pc2.g07.algorithms.Algorithm import Algorithm
 from queue import Queue
 import random
 import itertools
+import os
 
 """
 This class implements an A* algorithm to solve a path-finding problem.
@@ -176,6 +177,10 @@ class A_Star(Algorithm):
 
     # Function to save the board in a file, file name is the step of execution
     def save_board_A_star(self, index):
+        basedir = os.path.dirname(
+            "Results_A_star\\00001.txt")
+        if not os.path.exists(basedir):
+            os.makedirs(basedir)
         with open("Results_A_star\\%05d.txt" % (index,), "w+") as file:
             for row in self.board:
                 file.writelines(row)
