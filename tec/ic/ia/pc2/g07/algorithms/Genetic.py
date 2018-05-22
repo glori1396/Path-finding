@@ -118,7 +118,6 @@ class Genetic(Algorithm):
             if individual.amount_of_signals() == 0 and carrots != carrots_eaten:
                 fitness -= 50
             fitness -= (50 * (individual.amount_of_signals() - useful_signals))
-            print(individual.amount_of_signals(), useful_signals)
             fitness += carrots_eaten * 100
             fitness -= (carrots - carrots_eaten) * 50
             fitness += 3 * useful_signals

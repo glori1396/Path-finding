@@ -169,6 +169,8 @@ class A_Star(Algorithm):
         h_without_carrots = self.h_without_carrots()
         if carrots_coordinates != []:
             h_with_carrots = self.h_with_carrots(carrots_coordinates, current_state)
+        else:
+            h_with_carrots = [0 for i in self.open]
 
         self.f = [x + y + z for x, y, z in zip(g, h_without_carrots, h_with_carrots)]
 
