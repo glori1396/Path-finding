@@ -3,7 +3,7 @@
 **Description:** This repository contains the short-project #2 and #3 of Artificial Intelligence course from Instituto Tecnológico de Costa Rica, imparted by the professor Juan Manuel Esquivel. The project consists on implement search algorithms to solve labyrinth problems. Specifically, we will solve a problem where a board introduced as a file have a rabbit and carrots. The rabbit, then will have to find a specified amount of carrots.
 
 The project will be divided into two parts, both contained in a console program that will execute with different modes using differentiated flags. The first will consist
-in developing a heuristic used within [A*](#a-star) to generically go over the board in
+in developing a heuristic used within [A*](#a) to generically go over the board in
 look for carrots. The second will consist of developing a [Genetic Algorithm](#genetic-algorithm) that will optimize the placement of directional signals so that the rabbit travel over the board.
 
 ### Content:
@@ -146,7 +146,7 @@ to finish his work.
 
 The function cost is defined as follows:
 
-\\(frac{n!}{k!(n-k)!}\\)
+$$f(x) = \lambda e^{-\lambda x}$$
 
 For logistic regression we had to compare how it performs with regularization L1 and L2. All the experiment combinations were ran 10 times and the value in the table is the mean. Also, all the experiments were ran with normalized samples covering the whole country, the samples were normalized and the labels were transformed to one hot encoding. The algorithm was implemented using Tensorflow and you can follow the process with specific commented functions at [Logistic_Regression.py](../master/tec/ic/ia/p1/models/Logistic_Regression.py). In these tests we used the next hyper-parameters to get the best results:
 * Learning rate = 0.01
