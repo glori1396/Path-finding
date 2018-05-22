@@ -146,12 +146,84 @@ to finish his work.
 
 The function cost is defined as follows:
 
-$$f(x) = \lambda e^{-\lambda x}$$
+<div style="text-align:center"><img text="Board" src="images/cost_function.png" width="200"></div>
 
-For logistic regression we had to compare how it performs with regularization L1 and L2. All the experiment combinations were ran 10 times and the value in the table is the mean. Also, all the experiments were ran with normalized samples covering the whole country, the samples were normalized and the labels were transformed to one hot encoding. The algorithm was implemented using Tensorflow and you can follow the process with specific commented functions at [Logistic_Regression.py](../master/tec/ic/ia/p1/models/Logistic_Regression.py). In these tests we used the next hyper-parameters to get the best results:
-* Learning rate = 0.01
-* Training epochs = 5000
-* Batch size = 1000
-* Regularization Coefficient = 0.01
+we defined g(x) as:
 
-The results were:
+<div style="text-align:center"><img src="images/cost_g.png" width="200"></div>
+
+where x stands for the number of steps taken.
+
+Then we have the heuristic h(x) defined as:
+<div style="text-align:center"><img src="images/cost_h.png" width="300"></div>
+
+We defined h_without_carrots(x) as the function of heuristic without considering the carrots in sight:
+
+<div style="text-align:center"><img src="images/cost_h_without_carrots.png" width="400"></div>
+
+where x is the possible state to move. Then the function considering the carrots is defined as the heuristic h_with_carrots(x):
+
+<div style="text-align:center"><img src="images/cost_h_with_carrots.png" width="400"></div>
+
+The *nearest_carrot* part is the distance between the possible state and the nearest possible carrot. For example in:
+
+<div style="text-align:center"><img src="images/nearest.PNG" width="150"></div>
+
+For the tested next state **[3,1]**, the nearest carrot will be **[5,0]**; because abs(3-5)+abs(1-0) = **3** and for the other carrot in sight the distance is abs(3-0)+abs(1-5) = **7**.
+
+The *carrots_at_reach* part is how many carrots are at reach if you move to the state. For example, the reach fields are presented in the next images:
+
+<div style="text-align:center"><img src="images/reach_left.png" width="100"><img src="images/reach_down.png" width="100"><img src="images/reach_right.png" width="100"><img src="images/reach_up.png" width="100"></div>
+
+where the results for the states [[2,0], [3,1], [2,2], [1,1]] would be **1**.
+
+So, for summary, if we those two scenarios the costs are:
+
+ <div style="text-align:center"><img src="images/cost_ex_left.png" width="100"><img src="images/cost_ex.png" width="100"><img src="images/cost_example.png" width="100"><img src="images/cost_ex_up.png" width="100"></div>
+
+ <div style="text-align:center"><img src="images/cost_ex_down.png" width="100"><img src="images/cost_ex_down.png" width="100"><img src="images/cost_example_right.png" width="100"><img src="images/cost_example_right.png" width="100"></div>
+
+ The best possible states are equally [2,0] and [3,1] with a cost of **6**. In these cases the next state is selected randomly.
+
+Now, we will present the analysis of cost variation when carrots number and vision are changed. Every each of the following experiments are presented after 10 exexcutions. The value below is the mean of the cost. The board is presented above and it contains 25x25 boxes and 19 carrots. The commented code of this algorithm is in [A_Star.py](../master/tec/ic/ia/pc2/g07/algorithms/A_Star.py)
+
+#### Variation in carrots number
+
+<div style="text-align:center"><img src="images/chart_cost_carrots.png" width="300"><img src="images/chart_steps_carrots.png" width="300"></div>
+> The vision field is 2.
+<div style="text-align:center"><table>
+    <tbody>
+        <tr>
+            <th>Carrots</th>
+            <th>1</th>
+            <th>3</th>
+            <th>5</th>
+            <th>9</th>
+            <th>13</th>
+            <th>15</th>
+            <th>19</th>
+        </tr>
+        <tr>
+            <th>Cost</th>
+            <td>25.3</td>
+            <td>929.5</td>
+            <td>4707.5</td>
+            <td>30697.7</td>
+            <td>85406.3</td>
+            <td>210162.4</td>
+            <td>1911582.1</td>
+        </tr>
+        <tr>
+            <th>Steps</th>
+            <td>6.6</td>
+            <td>41.6</td>
+            <td>90.8</td>
+            <td>225.7</td>
+            <td>375.3</td>
+            <td>587.5</td>
+            <td>1776</td>
+        </tr>
+    </tbody>
+</table></div>
+
+* As we can see if the rabbit needs to find more carrots will have to move more around the board and the cost will grow.
