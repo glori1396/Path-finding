@@ -1,7 +1,7 @@
 from tec.ic.ia.pc2.g07.algorithms.Algorithm import Algorithm
 from tec.ic.ia.pc2.g07.algorithms.Genetic_Classes.Individual import Individual
 from tec.ic.ia.pc2.g07.algorithms.Genetic_Classes.CrossOver import CrossOver
-from random import random, choice, randint
+from random import random, choice, randint, seed
 import os
 """
 This class implements a genetic algorithm to solve a path-finding problem.
@@ -20,9 +20,10 @@ class Genetic(Algorithm):
         self.mutation_rate = mutation_rate
 
     # Function for establish a seed on random generator
-    def set_random_seed(self, seed):
-        random.seed(seed)
+    def set_random_seed(self, n_seed):
+        seed(n_seed)
 
+    # Function to produce every individual same as the board
     def first_birth(self, template, amount):
         gene = []
         for row in template:
@@ -31,6 +32,7 @@ class Genetic(Algorithm):
         # Population
         return [Individual(gene) for i in range(amount)]
 
+    # Function to mutate the population given a mutation rate.
     def mutate_population(self, population, mutation_rate):
         max_index = len(population[0].gene)-1
         possibilities = [">", "<", "V", "A", " "]
@@ -48,13 +50,14 @@ class Genetic(Algorithm):
 
     # Function to check a coordinate is aceptable (in-borders of the board)
     def is_in_board(self, x, y):
-        if x < 0 or y < 0 or x>=self.rows_in_board or y>=self.cols_in_board:
+        if x < 0 or y < 0 or x >= self.rows_in_board or y >= self.cols_in_board:
             return False
         return True
 
+    # Function to get information at walking through the board
     def walk_trough_board(self, board, rabbit, max_movements):
-        directions = [[0,-1],[0,1],[-1,0],[1,0]]
-        dir_names = ["izquierda","derecha", "arriba", "abajo"]
+        directions = [[0, -1], [0, 1], [-1, 0], [1, 0]]
+        dir_names = ["izquierda", "derecha", "arriba", "abajo"]
         signals = ["<", ">", "A", "V"]
         contra = [">", "<", "V", "A"]
         selected_direction = directions[dir_names.index(self.direction)]
@@ -64,43 +67,49 @@ class Genetic(Algorithm):
         previous_signal = signals[dir_names.index(self.direction)]
         has_signals_contra = False
         carrots_since = 0
+        previous_useful_signal = []
         while True:
             if movements == max_movements:
-                if carrots_since == 0 and used_signals != []:
-                    used_signals.remove(used_signals[-1])
                 return movements, len(carrots_eaten), len(used_signals), has_signals_contra
 
-            step = [rabbit[0]+selected_direction[0], rabbit[1]+selected_direction[1]]
-            if not self.is_in_board(step[0],step[1]):
-                if carrots_since == 0 and used_signals != []:
-                    used_signals.remove(used_signals[-1])
+            step = [rabbit[0]+selected_direction[0],
+                    rabbit[1]+selected_direction[1]]
+            if not self.is_in_board(step[0], step[1]):
+                if carrots_since != 0 and previous_useful_signal != []:
+                    used_signals.append(previous_useful_signal)
                 return movements, len(carrots_eaten), len(used_signals), has_signals_contra
 
             movements += 1
             if board[step[0]][step[1]] == 'Z' and step not in carrots_eaten:
                 carrots_eaten.append(step[:])
-                carrots_since+=1
+                carrots_since += 1
             elif board[step[0]][step[1]] in signals:
                 if selected_direction != directions[signals.index(board[step[0]][step[1]])] and step not in used_signals:
-                    if carrots_since != 0:
-                        used_signals.append(step[:])
+                    if carrots_since != 0 and previous_useful_signal != []:
+                        used_signals.append(previous_useful_signal)
                         carrots_since = 0
                     if previous_signal == contra[signals.index(board[step[0]][step[1]])]:
                         has_signals_contra = True
-                selected_direction = directions[signals.index(board[step[0]][step[1]])]
+                    else:
+                        previous_useful_signal = step[:]
+                selected_direction = directions[signals.index(
+                    board[step[0]][step[1]])]
                 previous_signal = board[step[0]][step[1]]
 
             rabbit = step[:]
 
+    # Function to calculate fitness using information of the walk through the board
     def calculate_fitness(self, population):
         carrots = population[0].gene.count("Z")
         rabbit = population[0].gene.index("C")
-        rabbit = [rabbit//self.cols_in_board%self.rows_in_board, rabbit%self.cols_in_board]
+        rabbit = [rabbit//self.cols_in_board %
+                  self.rows_in_board, rabbit % self.cols_in_board]
         max_movements = self.rows_in_board*self.cols_in_board
         fitness = 0
         for individual in population:
             board = individual.gene_as_board(self.cols_in_board)
-            movements, carrots_eaten, useful_signals, has_signals_contra = self.walk_trough_board(board, rabbit, max_movements)
+            movements, carrots_eaten, useful_signals, has_signals_contra = self.walk_trough_board(
+                board, rabbit, max_movements)
 
             if has_signals_contra:
                 fitness -= 100
@@ -109,6 +118,7 @@ class Genetic(Algorithm):
             if individual.amount_of_signals() == 0 and carrots != carrots_eaten:
                 fitness -= 50
             fitness -= (50 * (individual.amount_of_signals() - useful_signals))
+            print(individual.amount_of_signals(), useful_signals)
             fitness += carrots_eaten * 100
             fitness -= (carrots - carrots_eaten) * 50
             fitness += 3 * useful_signals
@@ -117,6 +127,7 @@ class Genetic(Algorithm):
             individual.fitness = fitness
             fitness = 0
 
+    # Function to print the results and save them in a file
     def print_and_save(self, population, generation):
         basedir = os.path.dirname(
             "Results_GA\\"+self.direction+"\\%05d\\00001.txt" % (generation,))
@@ -132,6 +143,7 @@ class Genetic(Algorithm):
                     file.write("\n")
             num += 1
 
+    # Function that calls the above functions
     def execute(self):
         print("\nDeleting old results...")
         self.remove_last_results("Results_GA\\"+self.direction)

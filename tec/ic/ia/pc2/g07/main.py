@@ -88,7 +88,7 @@ elif args.genetico:
         parser.error(
             "The genetic algorithm needs to know the individual's and generation's amount.")
         exit(-1)
-    elif args.individuos < 1 or args.generaciones < 1 or args.individuos > 99999 or args.generaciones > 99999:
+    elif args.individuos < 2 or args.generaciones < 1 or args.individuos > 99999 or args.generaciones > 99999:
         parser.error(
             "The genetic algorithm needs to know the individual's and generation's amount. (1-99999)")
         exit(-1)

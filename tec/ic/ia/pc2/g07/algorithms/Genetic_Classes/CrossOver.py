@@ -14,7 +14,7 @@ class CrossOver(ABC):
     def select_parents(self, possible_parents):
         pass
 
-    # Abstract function where the parents are selected
+    # Abstract function where the crossover is implemented
     @abstractmethod
     def cross(self, parents):
         pass

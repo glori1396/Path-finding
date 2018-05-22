@@ -27,31 +27,31 @@ class A_Star(Algorithm):
         random.seed(seed)
 
     # Function for search where is located the rabbit at start
-    def search_start(self):
-        for row in range(len(self.board)):
-            if 'C' in self.board[row]:
-                return [row, self.board[row].index('C')]
+    def search_start(self, board):
+        for row in range(len(board)):
+            if 'C' in board[row]:
+                return [row, board[row].index('C')]
         print("\nThe file does not contain a rabbit.")
         exit(-1)
 
     # Function to check a coordinate is aceptable (in-borders of the board)
-    def is_in_board(self, x, y):
+    def is_in_board(self, x, y, board):
         try:
             if x < 0 or y < 0:
                 return False
-            dummy = self.board[x][y]
+            dummy = board[x][y]
             return True
         except:
             return False
 
     # Function to search all possible neighbors states that are in-borders
-    def search_neighbors(self, current_state):
+    def search_neighbors(self, current_state, board):
         neighbors = [[0, -1], [0, 1], [-1, 0], [1, 0]]
         succesors = []
         for neighbor in neighbors:
             x = current_state[0] + neighbor[0]
             y = current_state[1] + neighbor[1]
-            if self.is_in_board(x, y):
+            if self.is_in_board(x, y, board):
                 succesors.append([x, y])
         return succesors
 
@@ -91,7 +91,7 @@ class A_Star(Algorithm):
         print(step + move)
 
     # Function to get the carrots' coordinates that are in the vision field
-    def carrots_in_sight(self, current_state):
+    def carrots_in_sight(self, current_state, board):
         posibilites = list(range(-self.vision, self.vision+1))
         vision_field_indexes = [[x, y]
                                 for x in posibilites for y in posibilites]
@@ -100,7 +100,7 @@ class A_Star(Algorithm):
         for field in vision_field_indexes:
             x = current_state[0] + field[0]
             y = current_state[1] + field[1]
-            if self.is_in_board(x, y) and self.board[x][y] == 'Z':
+            if self.is_in_board(x, y, board) and board[x][y] == 'Z':
                 carrots_coordinates.append([x, y])
         return carrots_coordinates
 
@@ -136,10 +136,10 @@ class A_Star(Algorithm):
         h = []
         for possible_state in self.open:
             nearest_carrot_distance = abs(
-                possible_state[0]-carrots_coordinates[0][0] + possible_state[1]-carrots_coordinates[0][1])
+                possible_state[0]-carrots_coordinates[0][0]) + abs(possible_state[1]-carrots_coordinates[0][1])
             for carrot in carrots_coordinates[1:]:
                 distance = abs(
-                    possible_state[0]-carrot[0] + possible_state[1]-carrot[1])
+                    possible_state[0]-carrot[0]) + abs(possible_state[1]-carrot[1])
                 if distance < nearest_carrot_distance:
                     nearest_carrot_distance = distance
 
@@ -163,16 +163,14 @@ class A_Star(Algorithm):
         return h
 
     # Function to calculate the cost function for every possible state
-    def calculate_f_score(self, current_state):
+    def calculate_f_score(self, current_state, board):
         g = [self.g for i in self.open]
-        h = 0
-        carrots_coordinates = self.carrots_in_sight(current_state)
-        h = self.h_without_carrots()
+        carrots_coordinates = self.carrots_in_sight(current_state, board)
+        h_without_carrots = self.h_without_carrots()
         if carrots_coordinates != []:
-            h_carrots = self.h_with_carrots(carrots_coordinates, current_state)
-            h = [x + y for x, y in zip(h, h_carrots)]
+            h_with_carrots = self.h_with_carrots(carrots_coordinates, current_state)
 
-        self.f = [x + y for x, y in zip(g, h)]
+        self.f = [x + y + z for x, y, z in zip(g, h_without_carrots, h_with_carrots)]
 
     # Function to save the board in a file, file name is the step of execution
     def save_board_A_star(self, index):
@@ -184,7 +182,7 @@ class A_Star(Algorithm):
     # Function to execute A* algorithm
     def execute(self):
         self.remove_last_results("Results_A_star")
-        self.open.append(self.search_start())
+        self.open.append(self.search_start(self.board))
         self.f.append(0)
         carrots_found = 0
 
@@ -197,10 +195,10 @@ class A_Star(Algorithm):
                 break
 
             # Refresh neighbors
-            self.open = self.search_neighbors(current)
+            self.open = self.search_neighbors(current, self.board)
 
             # f(state) = g(state) + h(state)
-            self.calculate_f_score(current)
+            self.calculate_f_score(current, self.board)
 
             # Stores last movement
             self.put_Last_Movement(current)
