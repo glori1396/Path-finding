@@ -10,7 +10,7 @@ in developing a heuristic used within [A*](#a) to generically go over the board 
 * [Installation](#installation)
 * [Usage](#usage)
 * [Board Representation](#board-representation)
-* [Algorithms' Report](#models-report)
+* [Algorithms' Report](#algorithms-report)
 * [Unit Testing](#unit-testing)
 
 ## Installation:
