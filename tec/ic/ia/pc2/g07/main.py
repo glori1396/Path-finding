@@ -139,8 +139,7 @@ elif args.genetico and args.cantidad_padres > len(board)*len(board[0]):
 # Execute the algorithm
 #algorithm.board = board
 #algorithm.execute()
-r = 0
-g = 0
+r = []
 for i in range(10):
     board = []
     with open(args.tablero_inicial) as file:
@@ -150,10 +149,17 @@ for i in range(10):
                 row.append(col)
             board.append(row)
         file.close()
-    algorithm = A_Star(board=None, vision=args.vision,
-                       carrots=args.zanahorias, MaxLastMovements=movimientos_pasados)
+    algorithm = Genetic(board=None, direction=direction,
+                        number_individuals=args.individuos, number_generations=args.generaciones,
+                        crossover=crossover, mutation_rate=args.tasa_mutacion)
 
     algorithm.board = board
-    r += algorithm.execute()
-    g+= algorithm.g
-print("Result:", r/10, g/10)
+    r.append(algorithm.execute())
+r_t = []
+for i in range(len(r[0])):
+    s = 0
+    for j in range(len(r)):
+        s += r[j][i]
+    s = s/len(r)
+    r_t.append(s)
+print("Result:", r_t)

@@ -185,7 +185,7 @@ So, for summary, if we those two scenarios the costs are:
 
  The best possible states are equally [2,0] and [3,1] with a cost of **6**. In these cases the next state is selected randomly.
 
-Now, we will present the analysis of cost variation when carrots number and vision are changed. Every each of the following experiments are presented after 10 exexcutions. The value below is the mean of the cost. The board is presented above and it contains 25x25 boxes and 19 carrots. The commented code of this algorithm is in [A_Star.py](../master/tec/ic/ia/pc2/g07/algorithms/A_Star.py)
+Now, we will present the analysis of cost variation when carrots number and vision are changed. Every each of the following experiments are presented after 10 executions. The value below is the mean of the cost. The used board is presented above and it contains 25x25 boxes and 19 carrots. The commented code of this algorithm is in [A_Star.py](../master/tec/ic/ia/pc2/g07/algorithms/A_Star.py).
 
 #### Variation in carrots number
 
@@ -278,3 +278,155 @@ Now, we will present the analysis of cost variation when carrots number and visi
 
 
 ### Genetic Algorithm
+
+The main goal was to create a program that evolve the board with directional signals. The algorithm should not make decisions about how to move the rabbit step by step, but assume that the rabbit always moves in one way and it can change his direction with signals. The program, as said before, will have to determine the ideal location of the signals so that the rabbit can collect ALL the carrots on the board in as few steps as possible and with the least amount of signals.
+
+The initial state is given by a file equal to A*. In addition, it should be indicated through a flag, what will be the initial direction of the rabbit, which is key to place the first signal.
+Each individual, for the genetic algorithm, will be a complete board with its corresponding carrots, signals and location of the rabbit.
+
+We had to follow certain implementation restrictions:
+
+* Mutations are punctual operations. Add a signal in a random box, change the direction of a signal or remove a signal.
+* The fitness function must combine total carrots collected, amount of rabbit steps and number of signals. It must be emphasized that it is valid to have a linear combination
+heuristic where it is reflected that there is a greater penalty for adding a signal than for giving a certain number of steps.
+* The fitness function does not influence the selection of crossover and mutation. Both basic operations of genetic algorithms are, in essence, completely random
+given a policy. The fitness function only serves to order the population of more to less fitness and select those that pass to the next generation.
+
+Next we will explain the mutation, crossover and fitness decisions and implementation:
+
+* Mutation: We had a mutation rate given by parameter, if a random generated number is below the mutation rate, that individual will be mutated. If it qualify to be mutated, a random box is selected, if that random box contains *"C"* or *"Z"* (rabbit or carrot) that mutation will be discarted. Otherwise, a random element is selected from these options *">", "<", "V", "A", " "*, the element that is already on the box is removed from the options. The commented code can be found on [Genetic.py](../master/tec/ic/ia/pc2/g07/algorithms/Genetic.py) at *mutate_population()*
+> The original individual is NOT changed, a mutated copy is added in the population instead.
+
+* Crossover: The crossover algorithm is indicated by parameter. We had to implement 2 kind of crossover, we implemented [Random](../master/tec/ic/ia/pc2/g07/algorithms/Genetic_Classes/Random_CrossOver.py) and [Son of sons](../master/tec/ic/ia/pc2/g07/algorithms/Genetic_Classes/Sons_of_Sons_CrossOver.py) crossover. Basically both of them has 2 functions:
+  - *select_parents(population)*: This function selects a number (given by parameter) of parents from the population. For both implemented crossovers, the parents are selected randomly.
+  - *cross(parents)*: According to each crossover this function works different. Its objective is to cross the selected parents. **Random** crossover divide the parents in segments (same as number of parents) and each parent give the respectively segment according to the position of its selection, finally the son is added to the population. For example: If selected parents are [[1,2,3,4,5,6], [7,8,9,10,11,12]], the child would be [1,2,3,10,11,12]. And it can scalate to *n* parents. **Son of sons** simulates a more *"realistic"* idea of a generation. Taken for example the human life, a typical individual live to create a son and that son create another child. So, that is basically what this crossover do, the selected parentes are divide in two groups, each group creates a son like Random crossover does and then those sons creates a grandson that will be added to the population. The grandson's parents are randomly sorted and are crossed like Random crossover.
+
+* Fitness: To give each individual a fitness number, *walk_trough_board* and *calculate_fitness* functions were implemented in [Genetic.py](../master/tec/ic/ia/pc2/g07/algorithms/Genetic.py). In order to calculate the fitness we need 4 values given by *walk_trough_board*, those are:
+  - Movements: As it's said, is the number of steps made by the rabbit. It can be from 0 to the amount of boxes.
+  > The *walk_trough_board* is stopped when movements are the same as number of boxes in the board because that means a loop.
+  - Carrots Eaten: Is the number of carrots that the rabbit could find. If the carrot was already found this number don't increment. It can be from 0 to the total number of carrots.
+  - Useful signals: The amount of signals that lead to a carrot. Signals that don't lead to a carrot or weren't used don't increment this number. It can be from 0 to number of boxes minus the total amount of carrots minus one (the rabbit).
+  - Has opposite signals: A flag indicating if the board has opossite signals. It can be True or False. For example: [">"," ","<"] woud result as True.
+
+  After we got those values, we give penalties and rewards to the individual, those are:
+
+  <div style="text-align:center"><table>
+      <tbody>
+          <tr>
+              <th>Case</th>
+              <th>Points</th>
+              <th>Explanation</th>
+          </tr>
+          <tr>
+              <td>Carrot eaten</td>
+              <td>+100</td>
+              <td>Reward for find a carrot. Applied for each carrot found.</td>
+          </tr>
+          <tr>
+              <td>Movement</td>
+              <td>+5</td>
+              <td>Reward for step. Applied for each step. Indicating that the individual should explore more.</td>
+          </tr>
+          <tr>
+              <td>Useful Signal</td>
+              <td>+3</td>
+              <td>Reward for having useful signals. Applied for each useful signal.</td>
+          </tr>
+          <tr>
+              <td>Carrot left</td>
+              <td>-50</td>
+              <td>Penalty for not find a carrot. Applied for each carrot left.</td>
+          </tr>
+          <tr>
+              <td>Useless signals</td>
+              <td>-50</td>
+              <td>Penalty for having useless signals (Don't lead to a carrot or weren't used). Applied for each useless signal.</td>
+          </tr>
+          <tr>
+              <td>Starting</td>
+              <td>-50</td>
+              <td>Penalty for not having signals and don't get all the carrots. Applied once. Works when the algorithm is starting, giving better results to individuals that do something.</td>
+          </tr>
+          <tr>
+              <td>Has opposite signals</td>
+              <td>-100</td>
+              <td>Penalty for having opposite signals. Applied once.</td>
+          </tr>
+          <tr>
+              <td>Trap in a loop</td>
+              <td>-1000</td>
+              <td>Penalty for geting the movements same as the number of boxes in the board. Applied once. Discard the individual completely.</td>
+          </tr>
+      </tbody>
+  </table></div>
+
+
+Now, we will present the analysis of fitness variation when mutation rate and crossover are changed. Every each of the following experiments are presented after 10 executions. The value below is the mean of the fitness. The used board is presented above and it contains 25x25 boxes and 19 carrots. The commented code of this algorithm is in [Genetic.py](../master/tec/ic/ia/pc2/g07/algorithms/Genetic.py).
+
+#### Mutation Rate Variation
+
+<div style="text-align:center"><img src="images/chart_cost_carrots.PN" width="300"><img src="images/chart_steps_carrots.PN" width="300"></div>
+
+> The number of individuals are 100. The random crossover is selected. The number of parents is 2.
+
+<div style="text-align:center"><table>
+    <thead>
+      <tr>
+          <th>Direction</th>
+          <th>Left</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th colspan="2">Generation</th>
+            <th>1</th>
+            <th>5</th>
+            <th>10</th>
+            <th>15</th>
+            <th>25</th>
+            <th>50</th>
+            <th>75</th>
+            <th>100</th>
+            <th>150</th>
+        </tr>
+        <tr>
+            <th rowspan="3">Mutation Rate</th>
+            <th>5%</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th>25%</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th>50%</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table></div>
+
+* As we can see if the rabbit needs to find more carrots will have to move more around the board and the cost will grow.
