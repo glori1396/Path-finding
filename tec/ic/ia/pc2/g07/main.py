@@ -137,29 +137,5 @@ elif args.genetico and args.cantidad_padres > len(board)*len(board[0]):
     exit(-1)
 
 # Execute the algorithm
-#algorithm.board = board
-#algorithm.execute()
-r = []
-for i in range(10):
-    board = []
-    with open(args.tablero_inicial) as file:
-        for rows in file.readlines():
-            row = []
-            for col in rows[:-1]:
-                row.append(col)
-            board.append(row)
-        file.close()
-    algorithm = Genetic(board=None, direction=direction,
-                        number_individuals=args.individuos, number_generations=args.generaciones,
-                        crossover=crossover, mutation_rate=args.tasa_mutacion)
-
-    algorithm.board = board
-    r.append(algorithm.execute())
-r_t = []
-for i in range(len(r[0])):
-    s = 0
-    for j in range(len(r)):
-        s += r[j][i]
-    s = s/len(r)
-    r_t.append(s)
-print("Result:", r_t)
+algorithm.board = board
+algorithm.execute()

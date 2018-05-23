@@ -110,7 +110,7 @@ class Genetic(Algorithm):
             board = individual.gene_as_board(self.cols_in_board)
             movements, carrots_eaten, useful_signals, has_signals_contra = self.walk_trough_board(
                 board, rabbit, max_movements)
-            
+
             if has_signals_contra:
                 fitness -= 1000
             if movements == max_movements:
@@ -153,8 +153,7 @@ class Genetic(Algorithm):
         # Create original individuals
         population = self.first_birth(
             template=self.board, amount=self.number_individuals)
-        g = [0,4,9,14,24,49,74,99,149,199,249,299]
-        r = []
+
         # Reproduce for generations
         for generation in range(self.number_generations):
             old_population = population[:]
@@ -180,11 +179,3 @@ class Genetic(Algorithm):
 
             # Print to console and save file
             self.print_and_save(population, generation+1)
-
-            if generation == g:
-                s = 0
-                for i in population:
-                    s += i.fitness
-                s = s/len(population)
-                r.append(s)
-        return r
