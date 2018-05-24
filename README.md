@@ -1,8 +1,8 @@
 # Path Finding
 
-**Description:** This repository contains the short-project #2 and #3 of Artificial Intelligence course from Instituto Tecnológico of Costa Rica, imparted by the professor Juan Manuel Esquivel. The project consists on implementing search algorithms to solve labyrinth problems. Specifically, we will solve a problem where a board introduced as a file have a rabbit and carrots. The rabbit, then will have to find a specified amount of carrots.
+**Description:** This repository contains the short-project #2 and #3 of Artificial Intelligence course from Costa Rica Institute of Technology, imparted by the professor Juan Manuel Esquivel. The project consists on implementing search algorithms to solve labyrinth problems. Specifically, we will solve a problem where a board introduced as a file has a rabbit and carrots. The rabbit, then will have to find a specified amount of carrots.
 
-The project will be divided into two parts, both contained in a console program that will execute with different modes using differentiated flags. The first will consist
+The project will be divided into two parts, both contained in a console program that will be executed with different modes using differentiated flags. The first will consist
 in developing a heuristic used within [A*](#a) to generically go over the board looking for carrots. The second will consist of developing a [Genetic Algorithm](#genetic-algorithm) that will optimize the placement of directional signals so that the rabbit travel over the board.
 
 ### Content:
@@ -132,7 +132,7 @@ This section contains the analysis of using each algorithm and how well it perfo
 
 The main goal was to create a program that moves the rabbit through the board, a box at a time, using A\*. We had to design a cost function to guide the search A\* considering the accumulated cost and a heuristic to approximate the future cost. The accumulated cost up to a specific point in the execution of the algorithm will be simply the number of steps that the rabbit has given.
 
-The future cost will be describe below, the elements that we had to consider was:
+The future cost will be described below, the elements that we had to consider was:
 * The environment is not completely observable.
 * The rabbit will have a range of vision. If the current state has the rabbit in the box (20,
 18), for example, and the rabbit has a vision of two, may take into account the content of the boxes (18, 16) to the box (22, 20).
@@ -182,7 +182,7 @@ So, as summary, if we have these scenarios, the costs are:
 
  The best possible states are equally [2,0] and [3,1] with a cost of **6**. In these cases the next state is selected randomly.
 
-Now, we will present the analysis of cost variation when carrots number and vision are changed. Every each of the following experiments are presented after 10 executions. The value below is the mean of the cost. The commented code of this algorithm is in [A_Star.py](../master/tec/ic/ia/pc2/g07/algorithms/A_Star.py).
+Now, we will present the analysis of cost variation when carrots number and vision are changed. Every of the following experiments are presented after 10 executions. The value below is the mean of the cost. The commented code of this algorithm is in [A_Star.py](../master/tec/ic/ia/pc2/g07/algorithms/A_Star.py).
 
 The used board is presented below and it contains 25x25 boxes and 19 carrots. You can find it on [test_board.txt](../master/test_board.txt).
 
@@ -230,7 +230,7 @@ The used board is presented below and it contains 25x25 boxes and 19 carrots. Yo
 
 From these results we can conclude:
 
-* If the rabbit needs to find more carrots will have to move more around the board and the cost will grow.
+* If the rabbit needs to find more carrots it will have to move more around the board and the cost will grow.
 
 #### Variation in vision field
 
@@ -279,14 +279,14 @@ From these results we can conclude:
 
 * On vision field of 19 and 20, the rabbit gets in a loop so it will never stop, that's why in the chart we put it a Inf value.
 
-* The loop is caused because the rabbit walk to a certain point where it approaches a carrot and another carrot see as a better approach and viceversa. So it moves in circles.
+* The loop is caused because the rabbit walks to a certain point where it approaches a carrot and another carrot seems as a better approach and viceversa. So it moves in circles.
 
-* As we can see when the vision field gets bigger the rabbit can do better decision, so it reduces the cost and steps. That tendency remains until a certain number of vision field.
+* As we can see when the vision field gets bigger the rabbit can make a better decision, so it reduces the cost and steps. That tendency remains until a certain number of vision field.
 
 
 ### Genetic Algorithm
 
-The main goal was to create a program that evolve the board with directional signals. The algorithm should not make decisions about how to move the rabbit step by step, but assume that the rabbit always moves in one way and it can change its direction with signals. The program, as said before, will have to determine the ideal location of the signals so that the rabbit can collect ALL the carrots on the board in as few steps as possible and with the least amount of signals.
+The main goal was to create a program that evolves the board with directional signals. The algorithm should not make decisions about how to move the rabbit step by step, but assumes that the rabbit always moves in one way and it can change its direction with signals. The program, as said before, will have to determine the ideal location of the signals so that the rabbit can collect ALL the carrots on the board in as few steps as possible and with the least amount of signals.
 
 The initial state is given by a file equal to A*. In addition, it should be indicated through a flag, what will be the initial direction of the rabbit, which is key to place the first signal.
 Each individual, for the genetic algorithm, will be a complete board with its corresponding carrots, signals and location of the rabbit.
@@ -301,17 +301,17 @@ given a policy. The fitness function only serves to order the population of more
 
 Next we will explain the mutation, crossover and fitness decisions and implementation:
 
-* Mutation: We had a mutation rate given by parameter, if a random generated number is below the mutation rate, that individual will be mutated. If it qualify to be mutated, a random box is selected, if that random box contains *"C"* or *"Z"* (rabbit or carrot) that mutation will be discarted. Otherwise, a random element is selected from these options *">", "<", "V", "A", " "*, the element that is already on the box is removed from the options. The commented code can be found on [Genetic.py](../master/tec/ic/ia/pc2/g07/algorithms/Genetic.py) at *mutate_population()*
+* Mutation: We had a mutation rate given by parameter, if a random generated number is below the mutation rate, that individual will be mutated. If it qualifies to be mutated, a random box is selected, if that random box contains *"C"* or *"Z"* (rabbit or carrot) that mutation will be discarted. Otherwise, a random element is selected from these options *">", "<", "V", "A", " "*, the element that is already on the box is removed from the options. The commented code can be found on [Genetic.py](../master/tec/ic/ia/pc2/g07/algorithms/Genetic.py) at *mutate_population()*
 > The original individual is NOT changed, a mutated copy is added in the population instead.
 
-* Crossover: The crossover algorithm is indicated by parameter. We had to implement 2 kind of crossover, we implemented [Random](../master/tec/ic/ia/pc2/g07/algorithms/Genetic_Classes/Random_CrossOver.py) and [Son of sons](../master/tec/ic/ia/pc2/g07/algorithms/Genetic_Classes/Sons_of_Sons_CrossOver.py) crossover. Basically both of them has 2 functions:
+* Crossover: The crossover algorithm is indicated by parameter. We had to implement 2 types of crossover, we implemented [Random](../master/tec/ic/ia/pc2/g07/algorithms/Genetic_Classes/Random_CrossOver.py) and [Son of sons](../master/tec/ic/ia/pc2/g07/algorithms/Genetic_Classes/Sons_of_Sons_CrossOver.py) crossover. Basically both of them has 2 functions:
   - *select_parents(population)*: This function selects a number (given by parameter) of parents from the population. For both implemented crossovers, the parents are selected randomly.
-  - *cross(parents)*: According to each crossover this function works different. Its objective is to cross the selected parents. **Random** crossover divide the parents in segments (same as number of parents) and each parent give the respectively segment according to the position of its selection, finally the son is added to the population. For example: If selected parents are [[1,2,3,4,5,6], [7,8,9,10,11,12]], the child would be [1,2,3,10,11,12]. And it can scalate to *n* parents. **Son of sons** simulates a more *"realistic"* idea of a generation. Taken for example the human life, a typical individual live to create a son and that son create another child. So, that is basically what this crossover do, the selected parentes are divide in two groups, each group creates a son like Random crossover does and then those sons creates a grandson that will be added to the population. The grandson's parents are randomly sorted and are crossed like Random crossover does.
+  - *cross(parents)*: According to each crossover this function works different. Its objective is to cross the selected parents. **Random** crossover divides the parents in segments (same as number of parents) and each parent gives the respectively segment according to the position of its selection, finally the son is added to the population. For example: If selected parents are [[1,2,3,4,5,6], [7,8,9,10,11,12]], the child would be [1,2,3,10,11,12]. And it can scalate to *n* parents. **Son of sons** simulates a more *"realistic"* idea of a generation. Taken for example the human life, a typical individual live to create a son and that son create another child. So, that is basically what this crossover do, the selected parents are divided in two groups, each group creates a son like Random crossover does and then those sons creates a grandson that will be added to the population. The grandson's parents are randomly sorted and are crossed like Random crossover does.
 
 * Fitness: To give each individual a fitness number, *walk_trough_board* and *calculate_fitness* functions were implemented in [Genetic.py](../master/tec/ic/ia/pc2/g07/algorithms/Genetic.py). In order to calculate the fitness we need 4 values given by *walk_trough_board*, those are:
-  - Movements: As it's said, is the number of steps made by the rabbit. It can be from 0 to the amount of boxes.
+  - Movements: As it's said, it is the number of steps made by the rabbit. It can be from 0 to the amount of boxes.
   > The *walk_trough_board* is stopped when movements are the same as number of boxes in the board because that means a loop.
-  - Carrots Eaten: Is the number of carrots that the rabbit could find. If the carrot has already been found this number don't increment. It can be from 0 to the total number of carrots.
+  - Carrots Eaten: It is the number of carrots that the rabbit could find. If the carrot has already been found this number doesn't increment. It can be from 0 to the total number of carrots.
   - Useful signals: The amount of signals that lead to a carrot. Signals that don't lead to a carrot or weren't used don't increment this number. It can be from 0 to number of boxes minus the total amount of carrots minus one (the rabbit).
   - Has opposite signals: A flag indicating if the board has opossite signals. It can be True or False. For example: [">"," ","<"] woud result as True.
 
@@ -327,7 +327,7 @@ Next we will explain the mutation, crossover and fitness decisions and implement
           <tr>
               <td>Carrot eaten</td>
               <td>+100</td>
-              <td>Reward for find a carrot. Applied for each carrot found.</td>
+              <td>Reward for finding a carrot. Applied for each carrot found.</td>
           </tr>
           <tr>
               <td>Movement</td>
@@ -342,7 +342,7 @@ Next we will explain the mutation, crossover and fitness decisions and implement
           <tr>
               <td>Carrot left</td>
               <td>-50</td>
-              <td>Penalty for not find a carrot. Applied for each carrot left.</td>
+              <td>Penalty for not finding a carrot. Applied for each carrot left.</td>
           </tr>
           <tr>
               <td>Useless signals</td>
@@ -362,7 +362,7 @@ Next we will explain the mutation, crossover and fitness decisions and implement
           <tr>
               <td>Trap in a loop</td>
               <td>-1000</td>
-              <td>Penalty for geting the movements same as the number of boxes in the board. Applied once. Discard the individual completely.</td>
+              <td>Penalty for getting the movements same as the number of boxes in the board. Applied once. Discard the individual completely.</td>
           </tr>
       </tbody>
   </table></div>
@@ -803,9 +803,9 @@ From these results we can conclude:
 
 
 From these results we can conclude:
-* For both crossovers, the best results was given on the maximum amount of parents. That's because all the population gives information to create a new individual.
-* However, this configuration (maximum amount of parents) can't be use in real solutions that need hundreds of individuals.
-* Both crossovers did it pretty the same but Random did it better at the end. That's because Random crossover leaves more *"clean"* the passed information, meanwhile on Sons of sons crossover there can be details that the sons don't pass to the grandson.
+* For both crossovers, the best results were given on the maximum amount of parents. That's because all the population gives information to create a new individual.
+* However, this configuration (maximum amount of parents) can't be used in real solutions that need hundreds of individuals.
+* Both crossovers did it pretty much the same but Random did it better at the end. That's because Random crossover leaves more *"clean"* the passed information, meanwhile on Sons of sons crossover there can be details that the sons don't pass to the grandson.
 * However, Son of sons can produce the same results using the two parents or the total of them.
 
 ## Unit Testing:
